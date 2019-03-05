@@ -1,6 +1,6 @@
-
 //Initial topic array
 var topics = ["oh snap", "ugh", "eye roll", "no"];
+var offsetNum = 0; 
 
 //function to create the buttons
 function displayButtons() {
@@ -11,6 +11,7 @@ function displayButtons() {
         var newButton = $("<button>");
         newButton.addClass("btn btn-secondary m-1 searchTopic");
         newButton.attr("data-search", topics[i]);
+        newButton.attr("offset", offsetNum); 
         newButton.text(topics[i]);
         newButton.appendTo($("#buttonHolder"));
     }
@@ -28,11 +29,15 @@ $("#submitNewSearch").on("click", function (event) {
 });
 
 //function that calls giphy and returns images based on selected button/search topic
-$(document).on("click", ".searchTopic", displayGifs);
-
 function displayGifs() {
     var searchQuery = $(this).attr("data-search");
-    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchQuery + "&api_key=lh4xNA332h0tpqHHIOJuWBEoMSuYDwrE&limit=10";
+    var searchOffset = $(this).attr("offset");
+
+    //increase offset parameter by 10 for next button click of same button
+    var nextOffset = parseInt($(this).attr("offset")) + 10; 
+    $(this).attr("offset", nextOffset); 
+
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchQuery + "&api_key=lh4xNA332h0tpqHHIOJuWBEoMSuYDwrE&limit=10&offset=" + searchOffset;
 
     $.ajax({
         url: queryURL,
@@ -43,11 +48,9 @@ function displayGifs() {
             console.log(response);
             var topicGifs = response.data;
             for (var i = 0; i < topicGifs.length; i++) {
-                //          if (topicGifs[i].rating !== "r" && topicGifs[i].rating !== "pg-13") {
                 var gifDiv = $("<div>");
                 gifDiv.addClass("float-left");
                 var rating = topicGifs[i].rating;
-                var title = topicGifs[i].title; 
                 var gifInfo = $("<p>").html("Rating: " + rating);
                 var topicImage = $("<img>");
                 
@@ -62,7 +65,7 @@ function displayGifs() {
                 gifDiv.append(gifInfo);
                 $("#gifHolder").prepend(gifDiv);
             }
-
+               
             //when user clicks on an image it will change to animated or still
             $(".gifTastic").on("click", function () {
 
@@ -82,5 +85,7 @@ function displayGifs() {
 //display the initial topic list as buttons
 displayButtons();
 
+//Display gifs when the user clicks on a search topic
+$(document).on("click", ".searchTopic", displayGifs);
 
 
