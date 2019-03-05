@@ -1,6 +1,6 @@
 //Initial topic array
 var topics = ["oh snap", "ugh", "eye roll", "no"];
-var offsetNum = 0; 
+var offsetNum = 0;
 
 //function to create the buttons
 function displayButtons() {
@@ -11,7 +11,7 @@ function displayButtons() {
         var newButton = $("<button>");
         newButton.addClass("btn btn-secondary m-1 searchTopic");
         newButton.attr("data-search", topics[i]);
-        newButton.attr("offset", offsetNum); 
+        newButton.attr("offset", offsetNum);
         newButton.text(topics[i]);
         newButton.appendTo($("#buttonHolder"));
     }
@@ -33,9 +33,9 @@ function displayGifs() {
     var searchQuery = $(this).attr("data-search");
     var searchOffset = $(this).attr("offset");
 
-    //increase offset parameter by 10 for next button click of same button
-    var nextOffset = parseInt($(this).attr("offset")) + 10; 
-    $(this).attr("offset", nextOffset); 
+    //increase offset parameter by 10 so user gets new gifs on a repeat button click
+    var nextOffset = parseInt($(this).attr("offset")) + 10;
+    $(this).attr("offset", nextOffset);
 
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + searchQuery + "&api_key=lh4xNA332h0tpqHHIOJuWBEoMSuYDwrE&limit=10&offset=" + searchOffset;
 
@@ -53,7 +53,7 @@ function displayGifs() {
                 var rating = topicGifs[i].rating;
                 var gifInfo = $("<p>").html("Rating: " + rating);
                 var topicImage = $("<img>");
-                
+
                 //set src to static image at first
                 topicImage.attr("src", topicGifs[i].images.fixed_height_still.url);
                 topicImage.attr("src-animate", topicGifs[i].images.fixed_height.url);
@@ -65,27 +65,28 @@ function displayGifs() {
                 gifDiv.append(gifInfo);
                 $("#gifHolder").prepend(gifDiv);
             }
-               
-            //when user clicks on an image it will change to animated or still
-            $(".gifTastic").on("click", function () {
-
-                var state = $(this).attr("gifState");
-
-                if (state === "still") {
-                    $(this).attr("src", $(this).attr("src-animate"));
-                    $(this).attr("gifState", "animate");
-                }
-                else {
-                    $(this).attr("src", $(this).attr("src-still"));
-                    $(this).attr("gifState", "still");
-                }
-            });
         });
 }
+
+//when user clicks on an image it will change to animated or still
+function animate() {
+    var state = $(this).attr("gifState");
+
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("src-animate"));
+        $(this).attr("gifState", "animate");
+    }
+    else {
+        $(this).attr("src", $(this).attr("src-still"));
+        $(this).attr("gifState", "still");
+    }
+};
+
 //display the initial topic list as buttons
 displayButtons();
 
 //Display gifs when the user clicks on a search topic
 $(document).on("click", ".searchTopic", displayGifs);
 
-
+//Animate or Pause the gifs when clicked
+$(document).on("click", ".gifTastic", animate);
