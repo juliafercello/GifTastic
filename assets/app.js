@@ -1,5 +1,5 @@
 //Initial topic array
-var topics = ["oh snap", "ugh", "eye roll", "no"];
+var topics = ["oh snap", "dubious", "eye roll", "no", "nailed it"];
 var offsetNum = 0;
 
 //function to create the buttons
